@@ -1,0 +1,111 @@
+name: VukaVPN Build
+
+on:
+  push:
+    branches: [main, vukavpn]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      build_targets:
+        description: 'Build targets (comma: android,linux,windows)'
+        default: 'android'
+
+env:
+  FLUTTER_VERSION: '3.38.5'
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # Android APK (most reliable, no signing needed for debug)
+  # ─────────────────────────────────────────────────────────
+  android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false   # skip hiddify-core for now
+          fetch-depth: 1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Show Flutter version
+        run: flutter --version
+
+      - name: Get Dart dependencies
+        run: |
+          flutter pub get 2>&1 | tail -40
+
+      - name: Build pre-flight (analyze)
+        run: |
+          flutter analyze --no-fatal-warnings 2>&1 | tail -50 || true
+
+      - name: Build Android APK (release, debug-signed)
+        # Use --no-shrink so first build doesn't fail on minification
+        run: |
+          flutter build apk --release \
+            --no-shrink \
+            --target-platform android-arm64 \
+            --build-name=1.0.0 \
+            --build-number=1 \
+            2>&1 | tail -100
+
+      - name: Locate APK output
+        run: |
+          ls -la build/app/outputs/flutter-apk/ || true
+          find build -name "*.apk" -exec ls -la {} \;
+
+      - name: Rename APK
+        run: |
+          cd build/app/outputs/flutter-apk
+          for f in *.apk; do
+            new=$(echo "$f" | sed "s/app-/VukaVPN-${{ github.ref_name }}-/" | sed "s/^app/VukaVPN-${{ github.ref_name }}/")
+            [ "$f" != "$new" ] && mv "$f" "$new" || true
+          done
+          ls -la
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VukaVPN-android-${{ github.run_number }}
+          path: build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
+
+      - name: Create Release (if tag push)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/*.apk
+          body: |
+            # VukaVPN ${{ github.ref_name }}
+
+            ⚠️ **Beta build — debug-signed APK**
+
+            ## Downloads
+            - Android: `VukaVPN-arm64-v8a-release.apk`
+
+            ## Install
+            1. Download the APK
+            2. Allow "Unknown sources" in Android Settings
+            3. Install → Open
+
+            ## Configuration
+            - Open VukaVPN
+            - Tap "+" → Add Profile From URL
+            - Paste subscription from https://panel.vukavpn.com user dashboard
+
+            ---
+            Build: ${{ github.sha }}

@@ -1,10 +1,178 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_408_56)">
-<path d="M47.1582 14.4283C47.1582 13.8368 47.4684 13.2886 47.9757 12.9842L61.4494 4.89891C62.5721 4.22529 64.0003 5.03389 64.0003 6.34306V20.2103C64.0003 21.1405 63.2461 21.8945 62.3161 21.8945H48.8424C47.9124 21.8945 47.1582 21.1405 47.1582 20.2103V14.4283Z" fill="#455FE9"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M24.3966 26.4593C23.8893 26.7637 23.5789 27.3118 23.5789 27.9034V43.7921L23.5789 45.4751L23.5789 45.4763L23.5789 48.0001C23.5789 48.9301 22.8249 49.6001 21.8947 49.6001H18.5263C17.5962 49.6001 16.8421 48.9301 16.8421 48.0001V45.4751V34.976C16.8421 33.6669 15.4139 32.8583 14.2913 33.5319L0.817607 41.6171C0.310362 41.9216 0 42.4696 0 43.0615V60.6342C0 61.5642 0.754048 62.3184 1.68421 62.3184H15.1579C16.0881 62.3184 16.8421 61.5642 16.8421 60.6342V58.9488V56.8314C16.8421 55.9011 17.5962 55.3376 18.5263 55.3376H21.8947C22.8249 55.3376 23.5789 55.9011 23.5789 56.8314V58.9488L23.5789 60.6342C23.5789 61.5642 24.333 62.3184 25.2632 62.3184H38.7368C39.6669 62.3184 40.4211 61.5642 40.4211 60.6342V45.4763V43.7921V19.8182C40.4211 18.509 38.9928 17.7004 37.8701 18.374L24.3966 26.4593Z" fill="#455FE9"/>
-<path d="M47.1592 28.7999V60.7999C47.1592 61.6836 47.9132 62.3999 48.8434 62.3999H62.3171C63.2472 62.3999 64.0013 61.6836 64.0013 60.7999V28.7999C64.0013 27.9162 63.2472 27.1999 62.3171 27.1999H48.8434C47.9132 27.1999 47.1592 27.9162 47.1592 28.7999Z" fill="#455FE9"/>
-</g>
-<defs>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- VukaVPN Icon v12 — 严格按参考图 1:1 还原
+       Dark navy 圆角方形 + 大尺寸白色折纸鹤侧面 (头朝右) + 底部 V 融合 -->
+  <defs>
+    <radialGradient id="bg" cx="0.5" cy="0.22" r="0.95">
+      <stop offset="0%"  stop-color="#3268c4"/>
+      <stop offset="50%" stop-color="#1a3d8f"/>
+      <stop offset="100%" stop-color="#0a1e4f"/>
+    </radialGradient>
 
-</defs>
+    <linearGradient id="paperHi" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eef3ff"/>
+    </linearGradient>
+    <linearGradient id="paperMid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d6e0f0"/>
+      <stop offset="100%" stop-color="#aebbd2"/>
+    </linearGradient>
+    <linearGradient id="paperShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7a90b0"/>
+      <stop offset="100%" stop-color="#4e6488"/>
+    </linearGradient>
+    <linearGradient id="vDeep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0a1e4f"/>
+    </linearGradient>
+
+    <radialGradient id="topGlare" cx="0.5" cy="0.15" r="0.5">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="8"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.35"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- iOS rounded square background -->
+  <rect width="1024" height="1024" rx="230" fill="url(#bg)"/>
+  <ellipse cx="512" cy="180" rx="420" ry="200" fill="url(#topGlare)"/>
+
+  <!-- ========== 折纸鹤 — 大尺寸侧面, 头朝右 ========== -->
+  <g transform="translate(512, 520)" filter="url(#softShadow)">
+
+    <!-- ===== 主翼 (左上大三角, 占主要视觉) ===== -->
+    <!-- 主翼上半亮面 -->
+    <path d="M -360 -280
+             L 80 -60
+             L -60 30
+             Z"
+          fill="url(#paperHi)"/>
+
+    <!-- 主翼下半中间色 (折叠面) -->
+    <path d="M -360 -280
+             L -60 30
+             L -220 80
+             L -340 -120
+             Z"
+          fill="url(#paperMid)"/>
+
+    <!-- 主翼底部翼根阴影 -->
+    <path d="M -220 80
+             L -60 30
+             L -100 130
+             L -180 130
+             Z"
+          fill="url(#paperShadow)" opacity="0.85"/>
+
+    <!-- 主翼内折线 (从翼根到翼尖) -->
+    <line x1="-360" y1="-280" x2="-60" y2="30" stroke="#5a7caa" stroke-width="3" opacity="0.6"/>
+
+    <!-- ===== 头 + 颈 + 喙 (右侧) ===== -->
+    <!-- 颈上面亮 -->
+    <path d="M 80 -60
+             L 230 -210
+             L 260 -180
+             L 130 -10
+             Z"
+          fill="url(#paperHi)"/>
+
+    <!-- 颈下面阴影 -->
+    <path d="M 80 -60
+             L 130 -10
+             L 220 -150
+             L 230 -210
+             Z"
+          fill="url(#paperMid)" opacity="0.85"/>
+
+    <!-- 头 -->
+    <path d="M 230 -210
+             L 295 -220
+             L 300 -180
+             L 260 -180
+             Z"
+          fill="url(#paperHi)"/>
+
+    <!-- 头阴影 -->
+    <path d="M 260 -180
+             L 300 -180
+             L 285 -170
+             L 268 -175
+             Z"
+          fill="url(#paperMid)"/>
+
+    <!-- 喙 (尖锐向右) -->
+    <path d="M 295 -220
+             L 370 -200
+             L 300 -180
+             Z"
+          fill="url(#paperShadow)"/>
+
+    <!-- 鹤眼 (明显黑色圆点 + 高光) -->
+    <circle cx="278" cy="-198" r="6" fill="#0a1e4f"/>
+    <circle cx="280" cy="-201" r="2" fill="#ffffff" opacity="0.95"/>
+
+    <!-- ===== 身体 (中央折面菱形) ===== -->
+    <!-- 身体亮面 -->
+    <path d="M 80 -60
+             L 130 -10
+             L 100 130
+             L -60 30
+             Z"
+          fill="url(#paperHi)"/>
+
+    <!-- 身体右侧阴影 -->
+    <path d="M 130 -10
+             L 100 130
+             L 80 60
+             L 105 20
+             Z"
+          fill="url(#paperMid)"/>
+
+    <!-- 身体中线 -->
+    <line x1="80" y1="-60" x2="100" y2="130" stroke="#aebbd2" stroke-width="2" opacity="0.6"/>
+
+    <!-- ===== V 字融合 (鹤腹底部, 深蓝, 两条腿/尾) ===== -->
+    <!-- V 左臂 -->
+    <path d="M -60 30
+             L -50 280
+             L 30 180
+             L 10 100
+             Z"
+          fill="url(#vDeep)"/>
+
+    <!-- V 中部连接 -->
+    <path d="M -60 30
+             L 10 100
+             L 100 130
+             L 60 170
+             L 30 180
+             L -50 280
+             Z"
+          fill="url(#paperShadow)"/>
+
+    <!-- V 右臂 (内侧深色) -->
+    <path d="M 100 130
+             L 130 290
+             L 60 170
+             Z"
+          fill="url(#vDeep)"/>
+
+    <!-- ===== 尾羽 (鹤后方简短) ===== -->
+    <path d="M -340 -120
+             L -390 -90
+             L -340 -60
+             L -310 -100
+             Z"
+          fill="url(#paperMid)"/>
+    <path d="M -390 -90
+             L -340 -60
+             L -360 -70
+             Z"
+          fill="url(#paperShadow)" opacity="0.7"/>
+  </g>
 </svg>
