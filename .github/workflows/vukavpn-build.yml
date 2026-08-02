@@ -6,8 +6,13 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+concurrency:
+  group: vukavpn-build-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   FLUTTER_VERSION: '3.38.5'
+  CORE_VERSION: '4.1.0'
 
 jobs:
   android:
@@ -28,6 +33,9 @@ jobs:
           distribution: zulu
           java-version: '17'
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -38,36 +46,43 @@ jobs:
       - name: Flutter version
         run: flutter --version
 
-      # ---- Hiddify's standard prepare sequence ----
       - name: 1) flutter pub get
         run: flutter pub get
 
-      - name: 2) Run code generation (freezed / drift / riverpod)
+      - name: 2) build_runner (freezed / drift / riverpod)
         run: dart run build_runner build --delete-conflicting-outputs
 
-      - name: 3) Generate translations (slang)
+      - name: 3) slang (translations)
         run: dart run slang
 
+      - name: 4) Download hiddify-core native libraries (.so)
+        run: |
+          mkdir -p android/app/libs
+          echo "Fetching hiddify-lib-android.tar.gz for core.version=${CORE_VERSION}"
+          curl -fL "https://github.com/hiddify/hiddify-core/releases/download/v${CORE_VERSION}/hiddify-lib-android.tar.gz" | tar xz -C android/app/libs/
+          echo "===== android/app/libs after unpack ====="
+          ls -la android/app/libs/
+          find android/app/libs -maxdepth 3 -type f | head -30
+
       - name: Build APK (release, arm64-v8a)
-        # Skip test step (no SENTRY_DSN secret needed for build itself)
         env:
           IS_GITHUB_ACTIONS: 1
-          CHANNEL: dev
+          CHANNEL: prod
         run: |
+          set -o pipefail
           flutter build apk --release \
-            --target=lib/main.dart \
+            --target=lib/main_prod.dart \
             --target-platform=android-arm64 \
             --build-name=1.0.0 \
             --build-number=1 \
-            --dart-define=sentry_dsn= \
-            2>&1 | tail -60
+            --dart-define=sentry_dsn= 2>&1 | tail -120
 
       - name: Locate output
         if: always()
         run: |
           echo "=== build/app/outputs/flutter-apk/ ==="
           ls -la build/app/outputs/flutter-apk/ 2>/dev/null || echo "(no APK)"
-          echo "=== find apk ==="
+          echo "=== find all APKs ==="
           find build -name "*.apk" 2>/dev/null
 
       - name: Upload APK
@@ -86,4 +101,4 @@ jobs:
           files: build/app/outputs/flutter-apk/*.apk
           body: |
             # VukaVPN ${{ github.ref_name }}
-            Beta build — install on Android (Unknown sources allowed)
+            Beta build - install on Android (allow "Unknown sources").
