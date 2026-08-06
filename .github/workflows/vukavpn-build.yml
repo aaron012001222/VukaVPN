@@ -64,7 +64,7 @@ jobs:
           ls -la android/app/libs/
           find android/app/libs -maxdepth 3 -type f | head -30
 
-      - name: Build APK (release, arm64-v8a)
+      - name: Build APK (release, split-per-abi, all 3 arches)
         env:
           IS_GITHUB_ACTIONS: 1
           CHANNEL: prod
@@ -72,10 +72,24 @@ jobs:
           set -o pipefail
           flutter build apk --release \
             --target=lib/main_prod.dart \
-            --target-platform=android-arm64 \
-            --build-name=1.0.0 \
-            --build-number=1 \
+            --split-per-abi \
+            --target-platform=android-arm,android-arm64,android-x64 \
+            --build-name=0.2.0 \
+            --build-number=2 \
             --dart-define=sentry_dsn= 2>&1 | tail -120
+
+      - name: Build universal APK (fat, for compatibility fallback)
+        env:
+          IS_GITHUB_ACTIONS: 1
+          CHANNEL: prod
+        run: |
+          set -o pipefail
+          flutter build apk --release \
+            --target=lib/main_prod.dart \
+            --target-platform=android-arm,android-arm64,android-x64 \
+            --build-name=0.2.0 \
+            --build-number=2 \
+            --dart-define=sentry_dsn= 2>&1 | tail -80
 
       - name: Locate output
         if: always()
