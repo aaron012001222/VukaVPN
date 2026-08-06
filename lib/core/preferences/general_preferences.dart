@@ -116,6 +116,14 @@ abstract class Preferences {
   static final psiphonConsentGiven = PreferencesNotifier.create<bool, bool>("psiphon-consent-given", false);
 
   static final showRouteGeneralOptions = PreferencesNotifier.create<bool, bool>("show-route-general-options", true);
+
+  // VukaVPN: user account authentication token (from Xboard login)
+  static final authToken = PreferencesNotifier.create<String?, String?>(
+    "vuka_auth_token",
+    null,
+    mapFrom: (value) => value,
+    mapTo: (value) => value ?? '',
+  );
 }
 
 @Riverpod(keepAlive: true)

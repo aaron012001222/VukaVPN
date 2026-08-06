@@ -9,6 +9,7 @@ import 'package:hiddify/core/router/go_router/helper/active_breakpoint_notifier.
 import 'package:hiddify/core/router/go_router/helper/custom_transition.dart';
 import 'package:hiddify/core/router/go_router/refresh_listenable.dart';
 import 'package:hiddify/features/about/widget/about_page.dart';
+import 'package:hiddify/features/auth/widget/login_page.dart';
 import 'package:hiddify/features/home/widget/home_page.dart';
 import 'package:hiddify/features/intro/widget/intro_page.dart';
 import 'package:hiddify/features/log/overview/logs_page.dart';
@@ -80,6 +81,16 @@ class RoutingConfigNotifier extends _$RoutingConfigNotifier {
         } else if (state.uri.queryParameters['url'] != null) {
           // Get the configured URL for intro
           url = state.uri.queryParameters['url'];
+        }
+
+        // VukaVPN: enforce login before anything else
+        final vukaToken = ref.read(Preferences.authToken);
+        final hasVukaToken = vukaToken != null && vukaToken.isNotEmpty;
+        if (!hasVukaToken && state.matchedLocation != '/login') {
+          return '/login';
+        }
+        if (hasVukaToken && state.matchedLocation == '/login') {
+          return '/home';
         }
 
         if (!ref.read(Preferences.introCompleted)) {
@@ -309,6 +320,7 @@ class RoutingConfigNotifier extends _$RoutingConfigNotifier {
           ],
         ),
         GoRoute(name: 'intro', path: '/intro', builder: (_, _) => const IntroPage()),
+        GoRoute(name: 'login', path: '/login', builder: (_, _) => const LoginPage()),
       ],
     );
   }
